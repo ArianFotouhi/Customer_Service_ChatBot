@@ -161,9 +161,9 @@ while True:
         'Customer bot': func_output,
           'time':datetime.now()})
 
-        print('this is me', second_response.content)
+#        print('second_resp', second_response.content)
     
     except:
         history.insert(0, {'Human user': user_prompt_, 
           'Customer bot': first_response.content, 'time':datetime.now()})
-        print(first_response.content)
+#        print(first_response.content)
