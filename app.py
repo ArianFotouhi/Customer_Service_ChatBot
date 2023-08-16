@@ -9,7 +9,7 @@ from datetime import datetime
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
-my_openai_key = ""
+my_openai_key = "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"
 openai.api_key = my_openai_key
 memory_length = 20
 history = []
@@ -20,7 +20,6 @@ def cancel_service():
         # grab the selected option
         # make the confirmation form disappeared
 #        confirmation = request.json['confirmation']
-
         confirmation= 'yes'
         if confirmation.lower() == 'yes':
             return 'Please click on the link https://company.com/cancelation, and also please email to cancel@company.com in case of further assistance.'
@@ -124,13 +123,42 @@ def db_mananger(records):
         db = Database()
         db.create_table()
         for r in records:
-                db.commit_table(r['chat_id'], r['user'], r['bot'], r['senti_fl'], r['senti_str'])
+            print('in db_mb', r['chat_id'], r['datetime'], r['human_user'], r['customer_service_bot'], r['senti_fl'], r['senti_str'])
+            db.commit_table(r['chat_id'], r['datetime'], r['human_user'], r['customer_service_bot'], r['senti_fl'], r['senti_str'])
+
 def chat_manager(chat_history):
          
         # determine its sentimental
+        sentiment_fl = llm.predict_messages(
+            [
+                HumanMessage(content = str(chat_history)),
+                AIMessage(content = 'return only a float as sentiment analysis result of this chat history from -1 (very negative) to 1 (very positive)'),
+                
+            ],)
         # determine str sentimental
+        try: 
+            sentiment_fl = float(sentiment_fl)
+            if sentiment_fl.content > 0.1:
+                sentiment_str =  'positive'
+            elif sentiment_fl.content < - 0.1:
+                sentiment_str =  'negative'
+            else:
+                sentiment_str = 'neutral'
+        except Exception as e:
+            print('exception in chat_manager', e)
+            sentiment_fl = 0.0
+            sentiment_str = 'not specified'
+        
         # create list of dictionaries
+        for record in chat_history:
+            record['senti_fl'] = sentiment_fl
+            record['senti_str'] = sentiment_str
+            print('in CHAT mng', record)
+        
         #put it into the db_manager
+        db_mananger(chat_history)
+
+
 def create_chat_id():
         return 1
         
@@ -142,6 +170,11 @@ def index():
 def get_response():
         
         global history
+        if len(history) == 0:
+            chat_id = create_chat_id()
+        else:
+            chat_id = history['chat_id']
+
         user_prompt_ = request.form['user_message']
 
         system_message = f"""You are a Customer Service Bot. Consider the conversation history in chat:
@@ -171,26 +204,26 @@ def get_response():
             second_response = llm.predict_messages(
             [
                 HumanMessage(content = user_prompt_),
-                
                 AIMessage(content = f'the result is: {func_output}, rephrase it and tell it to the customer as her action result'),
-                
             ],
                 
             )
             print('second reponse: ', second_response)
-            history.insert(0, {'Human user': user_prompt_, 
-            'Customer bot': func_output,
-            'time':datetime.now()})
-
+            history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_, 
+            'customer_service_bot': func_output,
+            'datetime':datetime.now()})
+            
+            chat_manager(history)
             return jsonify({'response': second_response.content})
         
         except Exception as e:
             print('im in exc')
             print(e)
             
-            history.insert(0, {'Human user': user_prompt_, 
-            'Customer bot': first_response.content, 'time':datetime.now()})
-
+            history.insert(0, {'chat_id':chat_id, 'human_user': user_prompt_, 
+            'customer_service_bot': first_response.content, 'datetime':datetime.now()})
+            
+            chat_manager(history)
             return jsonify({'response': first_response.content})
 
 
