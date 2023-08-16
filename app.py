@@ -1,25 +1,24 @@
+from flask import Flask, render_template, request, jsonify
+
 import json
 import openai
 from datetime import datetime
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
-from flask import Flask, render_template
-
 my_openai_key = ""
 openai.api_key = my_openai_key
 memory_length = 20
 history = []
 
-def cancel_service():
-    ans = input('please say yes if you are sure to cancel your service? ')
-    
-    if ans.lower() == 'yes':
-        pass
-    else:
-        return 'The request is not created for cancelation'
 
-    return 'Based on the received account detail the request is submitted, please email to cancel@company.com as the final step. Have a nice day!'
+def cancel_service():
+#        confirmation = request.json['confirmation']
+        confirmation= 'yes'
+        if confirmation.lower() == 'yes':
+            return 'Please click on the link https://company.com/cancelation, and also please email to cancel@company.com in case of further assistance.'
+        else:
+            return 'Cancelation request is annuled by the user'
 
 def extend_service(extension_period):
     ans = input(f"""please say yes if you request to extend your service for {extension_period} months
@@ -59,9 +58,6 @@ def refund(refund_reason, refund_amount):
         refund_amount = input('Refund Amount: ')
 
     return 'Your refund request is received. For further inquiries please contact refund@company.com'
-
-
-
 
 function_descriptions_multiple = [
     {
@@ -110,33 +106,33 @@ function_descriptions_multiple = [
 
     ]
 
-
-app = Flask(__name__)
-app.secret_key = "!241$gc"
-
-
 llm = ChatOpenAI(model="gpt-3.5-turbo-0613", temperature=0, openai_api_key = my_openai_key)
 
-@app.route('/', methods=['GET'])
-def index():
-    while False:
-        system_message = f"""You are a Customer Service Bot. Consider the conversation history in chat:
-        history: {history}
-        """
-        print('history', system_message)
+app = Flask(__name__)
 
-        user_prompt_ = input('ask me: ')
+# This is a simple dictionary-based chatbot.
+
+
+@app.route('/')
+def index():
+    return render_template('index.html')
+
+@app.route('/get_response', methods=['POST'])
+def get_response():
+        global history
+        user_prompt_ = request.form['user_message']
+
+        system_message = f"""You are a Customer Service Bot. Consider the conversation history in chat:
+            history: {history}
+            """
+        print('history: ', history)
 
         first_response = llm.predict_messages(
         [HumanMessage(content=user_prompt_),
         SystemMessage(content=system_message),],
         functions=function_descriptions_multiple,
         )
-
-        
-        
-        
-
+ 
         if len(history)>memory_length:
             history = history[:memory_length]
         
@@ -148,32 +144,31 @@ def index():
             chosen_function = eval(first_response.additional_kwargs["function_call"]["name"])
             func_output = chosen_function(**params)
             
-            print('func out', func_output)
+            print('func output: ', func_output)
             second_response = llm.predict_messages(
             [
-                HumanMessage(content=user_prompt_),
-                AIMessage(content=str(first_response.additional_kwargs)),
-                AIMessage(
-                    role="function",
-                    additional_kwargs={
-                        "name": first_response.additional_kwargs["function_call"]["name"]
-                    },
-                    content= func_output,
-                ),
+                HumanMessage(content = user_prompt_),
+                
+                AIMessage(content = f'the result is: {func_output}, rephrase it and tell it to the customer as her action result'),
+                
             ],
-                functions=function_descriptions_multiple,
+                
             )
+            print('second reponse: ', second_response)
             history.insert(0, {'Human user': user_prompt_, 
             'Customer bot': func_output,
             'time':datetime.now()})
 
-    #        print('second_resp', second_response.content)
+            return jsonify({'response': second_response.content})
         
-        except:
+        except Exception as e:
+            print('im in exc')
+            print(e)
+            
             history.insert(0, {'Human user': user_prompt_, 
             'Customer bot': first_response.content, 'time':datetime.now()})
-    #        print(first_response.content)
-    return render_template('index.html')
+
+            return jsonify({'response': first_response.content})
 
 
 if __name__ == '__main__':
