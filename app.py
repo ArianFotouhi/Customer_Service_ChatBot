@@ -13,7 +13,11 @@ history = []
 
 
 def cancel_service():
+        # make the confirmation form present (or a confirmation pop up)
+        # grab the selected option
+        # make the confirmation form disappeared
 #        confirmation = request.json['confirmation']
+
         confirmation= 'yes'
         if confirmation.lower() == 'yes':
             return 'Please click on the link https://company.com/cancelation, and also please email to cancel@company.com in case of further assistance.'
@@ -106,7 +110,7 @@ function_descriptions_multiple = [
 
     ]
 
-llm = ChatOpenAI(model="gpt-3.5-turbo-0613", temperature=0, openai_api_key = my_openai_key)
+llm = ChatOpenAI(model="gpt-3.5-turbo-0613", temperature = 0, openai_api_key = my_openai_key)
 
 app = Flask(__name__)
 
@@ -119,6 +123,7 @@ def index():
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
+        
         global history
         user_prompt_ = request.form['user_message']
 
@@ -129,6 +134,7 @@ def get_response():
 
         first_response = llm.predict_messages(
         [HumanMessage(content=user_prompt_),
+        
         SystemMessage(content=system_message),],
         functions=function_descriptions_multiple,
         )
