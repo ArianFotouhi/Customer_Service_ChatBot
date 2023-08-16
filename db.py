@@ -1,29 +1,33 @@
 import sqlite3
 
-conn = sqlite3.connect('conversation.db')
-cursor = conn.cursor()
+class Database:
+    def __init__(self):
+        self.conn = sqlite3.connect('conversation.db')
+        self.cursor = self.conn.cursor()
 
-cursor.execute('''
-    CREATE TABLE IF NOT EXISTS chat_history (
-        chat_id INTEGER PRIMARY KEY,
-        user_message TEXT,
-        bot_response TEXT,
-        sentiment_fl FLOAT,
-        sentiment_str TEXTT
-    )
-''')
+    def create_table(self):
 
-for user_msg, bot_resp in chat_session:
-    cursor.execute('INSERT INTO chat_history (user_message, bot_response) VALUES (?, ?)', (user_msg, bot_resp))
-    conn.commit()
+        self.cursor.execute('''
+            CREATE TABLE IF NOT EXISTS chat_history (
+                id INTEGER PRIMARY KEY,
+                chat_id INTEGER NOT NULL,
+                user_message TEXT,
+                bot_response TEXT,
+                sentiment_fl FLOAT,
+                sentiment_str TEXT
+                                       
+            )
+        ''')
+    def commit_table(self, chat_id, user_message, bot_response, sentiment_fl, sentiment_str):
+        self.cursor.execute('INSERT INTO chat_history (chat_id, user_message, bot_response, sentiment_fl, sentiment_str) VALUES (?, ?,?, ?,?)', ( chat_id, user_message, bot_response, sentiment_fl, sentiment_str))
+        self.conn.commit()
 
-# Fetch and print the saved chat history
-cursor.execute('SELECT user_message, bot_response FROM chat_history')
-history = cursor.fetchall()
+    def fetch_table(self, query = 'SELECT * FROM chat_history'):
+        # Fetch and print the saved chat history
+        self.cursor.execute(query)
+        history = self.cursor.fetchall()
 
-for row in history:
-    user_msg, bot_resp = row
-    print(f"{user_msg}\n{bot_resp}\n")
-
-# Close the database connection
-conn.close()
+        for row in history:
+            print(row)
+        # Close the database connection
+        self.conn.close()
