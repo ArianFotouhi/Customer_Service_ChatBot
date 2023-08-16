@@ -125,7 +125,15 @@ def db_mananger(records):
         db.create_table()
         for r in records:
                 db.commit_table(r['chat_id'], r['user'], r['bot'], r['senti_fl'], r['senti_str'])
-
+def chat_manager(chat_history):
+         
+        # determine its sentimental
+        # determine str sentimental
+        # create list of dictionaries
+        #put it into the db_manager
+def create_chat_id():
+        return 1
+        
 @app.route('/')
 def index():
     return render_template('index.html')
