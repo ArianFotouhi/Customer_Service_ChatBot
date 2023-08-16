@@ -1,4 +1,7 @@
 from flask import Flask, render_template, request, jsonify
+from bot_db import Database
+
+
 
 import json
 import openai
@@ -116,6 +119,12 @@ app = Flask(__name__)
 
 # This is a simple dictionary-based chatbot.
 
+def db_mananger(records):
+        #records is list of dictionaries
+        db = Database()
+        db.create_table()
+        for r in records:
+                db.commit_table(r['chat_id'], r['user'], r['bot'], r['senti_fl'], r['senti_str'])
 
 @app.route('/')
 def index():
