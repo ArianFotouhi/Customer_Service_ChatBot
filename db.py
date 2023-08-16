@@ -11,6 +11,7 @@ class Database:
             CREATE TABLE IF NOT EXISTS chat_history (
                 id INTEGER PRIMARY KEY,
                 chat_id INTEGER NOT NULL,
+                datetime DATETIME,
                 user_message TEXT,
                 bot_response TEXT,
                 sentiment_fl FLOAT,
@@ -18,8 +19,8 @@ class Database:
                                        
             )
         ''')
-    def commit_table(self, chat_id, user_message, bot_response, sentiment_fl, sentiment_str):
-        self.cursor.execute('INSERT INTO chat_history (chat_id, user_message, bot_response, sentiment_fl, sentiment_str) VALUES (?, ?,?, ?,?)', ( chat_id, user_message, bot_response, sentiment_fl, sentiment_str))
+    def commit_table(self, chat_id, datetime, user_message, bot_response, sentiment_fl, sentiment_str):
+        self.cursor.execute('INSERT INTO chat_history (chat_id, datetime, user_message, bot_response, sentiment_fl, sentiment_str) VALUES (?,?, ?,?, ?,?)', ( chat_id, datetime, user_message, bot_response, sentiment_fl, sentiment_str))
         self.conn.commit()
 
     def fetch_table(self, query = 'SELECT * FROM chat_history'):
