@@ -5,14 +5,14 @@ from config import my_api_key, model_name
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 from datetime import datetime
-from config import users
+from config import users, sender_email_address, sender_email_password, recpeint_email_address
 
 import uuid
 from sentiment_analyzer import analyzer
 from bot_db import ChatDatabase, RequestDatabase
+from NotifPy import EmailNotif
 
 llm = ChatOpenAI(model=model_name, temperature = 0, openai_api_key = my_api_key)
-
 
 
 def cancel_service(reason):
@@ -20,17 +20,46 @@ def cancel_service(reason):
         # grab the selected option
         # make the confirmation form disappeared
         #confirmation = request.json['confirmation']
+        print('reason in cancel func', reason)
         confirmation= 'yes'
         if confirmation.lower() == 'yes':
             request_manager(history, 'cancelation')
+            
+            username= session['username']
+            body = f'''A cancelation request is submitted by:
+            
+            Username: {username}
+            First Name: {users[username]['first_name']}
+            Last Name: {users[username]['last_name']}
+            Email: {users[username]['email']}
+            Date & Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+            '''
+            sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
+            sender.EmailSender(subject = "Request Submission: Cancelation ", body = body)
+
             return 'Please click on the link https://company.com/cancelation, and also please email to cancel@company.com in case of further assistance.'
+
         else:
+
             return 'Cancelation request is annuled by the user'
 
 def extend_service(extension_period):
 
     ans = 'yes'
     if ans.lower() == 'yes':
+        username= session['username']
+
+        body = f'''A service extension request is submitted by:
+        
+        Username: {username}
+        First Name: {users[username]['first_name']}
+        Last Name: {users[username]['last_name']}
+        Email: {users[username]['email']}
+        Date & Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        '''
+        sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
+        sender.EmailSender(subject = "Request Submission: Extension ", body = body)
+
         return f'Please click on the link https://company.com/extend, and also please email to extend@company.com in case of further assistance.'
 
     elif ans.lower() == 'no':
@@ -48,7 +77,19 @@ def refund(refund_reason, refund_amount):
     ans = 'yes'
     
     if ans.lower() == 'yes':
-        pass
+        username= session['username']
+
+        body = f'''A refund request is submitted by:
+        
+        Username: {username}
+        First Name: {users[username]['first_name']}
+        Last Name: {users[username]['last_name']}
+        Email: {users[username]['email']}
+        Date & Time: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+        '''
+        sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
+        sender.EmailSender(subject = "Request Submission: Refund ", body = body)
+
     elif ans.lower() == 'quit':
         return 'Refund request canceled'
     else:
@@ -117,7 +158,7 @@ def db_manager(record_type,**record):
             db = RequestDatabase()
 
         db.create_table()
-        print(record)
+        
         
             #print('in db_mb', r['chat_id'], r['datetime'], r['human_user'], r['customer_service_bot'], r['senti_fl'], r['senti_str'])           
             #db.commit_table(r['chat_id'], r['datetime'], r['human_user'], r['customer_service_bot'], r['senti_fl'], r['senti_str'])
