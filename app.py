@@ -10,7 +10,7 @@ from langchain.schema import HumanMessage, SystemMessage, AIMessage
 from utils import cancel_service, extend_service, refund, create_chat_id, db_manager, request_manager, chat_manager, function_descriptions_multiple, history
 from config import users, secret_key, my_api_key, model_name
 
-
+import traceback
 
 openai.api_key = my_api_key
 memory_length = 20
@@ -96,8 +96,9 @@ def get_response():
             return jsonify({'response': second_response.content})
         
         except Exception as e:
-            print('im in exc')
+            print('im in exc of app.py')
             print(e)
+            #traceback.print_exc()
             
             history.insert(0, {'chat_id':chat_id, 'human_user': user_prompt_, 
             'customer_service_bot': first_response.content, 'datetime':datetime.now()})
