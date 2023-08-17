@@ -4,7 +4,7 @@ from nltk.sentiment import SentimentIntensityAnalyzer
 nltk.download('vader_lexicon')  
 sia = SentimentIntensityAnalyzer()
 
-def analyze_sentiment(texts):
+def analyzer(texts):
     sent_list = []
     for text in texts:
 
@@ -20,8 +20,7 @@ def analyze_sentiment(texts):
     sent_avg = sent_agg/len(sent_list)
     print('final result', sent_avg)
 
-    sentiment = "positive" if sent_avg > 0.15 else "negative" if sent_avg < -0.15 else "neutral"
+    sentiment = "positive" if sent_avg > 0.02 else "negative" if sent_avg < -0.02 else "neutral"
 
     return sentiment, sent_avg
-
 
