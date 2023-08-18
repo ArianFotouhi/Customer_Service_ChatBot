@@ -11,16 +11,14 @@ def analyzer(texts):
         sentiment_scores = sia.polarity_scores(text)
         sent_list.append(sentiment_scores)
 
-    print('senti_list', sent_list)
     
     sent_agg = 0
     for i in sent_list:
         sent_agg = sent_agg +i['compound'] 
     
     sent_avg = sent_agg/len(sent_list)
-    print('final result', sent_avg)
 
-    sentiment = "positive" if sent_avg > 0.02 else "negative" if sent_avg < -0.02 else "neutral"
+    sentiment = "positive" if sent_avg > 0 else "negative" if sent_avg < 0 else "neutral"
 
     return sentiment, sent_avg
 
