@@ -13,7 +13,7 @@
     <div id="chat-container">
         <div id="chat-box"></div>
         <div style="display: flex; align-items: center;">
-            <input type="text" id="user-input" placeholder="Hey type me here...">
+            <input type="text" id="user-input" placeholder="Hi! type me here...">
             <button style="margin: 2%;" id="send-button">Send</button>
         </div>
     </div>
@@ -40,10 +40,15 @@
 
                     $.post('/get_response', {user_message: userMessage}, function(data) {
                         $('.typing').remove();
-                        $('#typing-animation').empty();
+                        //$('#typing-animation:last').empty();
                         
                         $('#typing-animation').text(data.response);
                         
+                        $('.typing').removeClass('.typing').addClass('old_typing');
+                        var $element = $('#typing-animation'); // Select the element with the old ID
+                        $element.attr('id', 'old_typing-animation'); // Change the ID attribute
+
+
                     });
                 }
             }
