@@ -82,3 +82,18 @@ body {
         opacity: 0.1;
    }
 }
+
+
+#recommended_questions {
+    background-size: cover;
+    background-position: center;
+    
+    display: grid;
+    gap: 1%; 
+    width: 80%;
+    height: 20%;
+    text-align: center;
+    margin: 3% auto;
+    justify-content: center;
+    align-items: center;
+}
