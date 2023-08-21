@@ -25,7 +25,6 @@ llm = ChatOpenAI(model = model_name, temperature = 0, openai_api_key = my_api_ke
 
 
 
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
@@ -57,7 +56,7 @@ def get_response():
 
         user_prompt_ = request.form['user_message']
 
-        system_message = f"""You are a Customer Service Bot. Consider your own conversation history in chat:
+        system_message = f"""You are a Customer Service Bot. Please ONLY reply questions regarding greeting, service cancelation, extension, refund and aviation industry. Please provide short and easy answers to user prompts. Consider your own conversation history in chat:
             history: {history}
             """
 
@@ -83,7 +82,7 @@ def get_response():
             second_response = llm.predict_messages(
             [
                 HumanMessage(content = user_prompt_),
-                AIMessage(content = f'the result is: {func_output}, rephrase it and tell it to the customer as her action result'),
+                AIMessage(content = f'the result is: {func_output}, rephrase it and tell it to the customer as her action result. Please do not add extra information to it, only rephrase the customer bot reply'),
             ],
                 
             )
