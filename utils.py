@@ -21,9 +21,7 @@ def cancel_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,
 #           sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
 #           sender.EmailSender(subject = "Request Submission: Cancelation ", body = body)
 
-        return 'Your request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
-
-
+        return 'Your cancelation request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
 
 def refund_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
@@ -31,8 +29,35 @@ def refund_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,
     print('refund inputs:')
     print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
     
-    return 'Your request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
+    return 'Your refund request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
+def amend_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+    
+    print('amend inputs:')
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    
+    return 'Your amending request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
+
+def qr_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+    
+    print('QR sending inputs:')
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    
+    return 'Your QR sending request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
+
+def dispute_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+    
+    print('disputing sending inputs:')
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    
+    return 'Your dispute request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
+
+def inquiry_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+    
+    print('inquiry sending inputs:')
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    
+    return 'Your inquiry request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
 function_descriptions_multiple = [
     {
@@ -55,6 +80,48 @@ function_descriptions_multiple = [
             "required": [],
         },
     },
+
+    {
+        "name": "amend_service",
+        "description": "To change the date of reservation of service",
+        "parameters": {
+            "type": "object",
+            "properties": {          
+            },
+            "required": [],
+        },
+    },
+    {
+        "name": "qr_service",
+        "description": "When QR code is not sent to the user",
+        "parameters": {
+            "type": "object",
+            "properties": {          
+            },
+            "required": [],
+        },
+    },
+    {
+        "name": "dispute_service",
+        "description": "To create dispute request",
+        "parameters": {
+            "type": "object",
+            "properties": {          
+            },
+            "required": [],
+        },
+    },
+        {
+        "name": "inquiry_service",
+        "description": "To send the company an inquiry",
+        "parameters": {
+            "type": "object",
+            "properties": {          
+            },
+            "required": [],
+        },
+    },
+
     ]
 
 history = []
