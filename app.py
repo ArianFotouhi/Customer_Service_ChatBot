@@ -7,7 +7,7 @@ from datetime import datetime
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
-from utils import cancel_service, refund_service, create_chat_id, db_manager, request_manager, chat_manager, function_descriptions_multiple, history
+from utils import cancel_service, refund_service, amend_service, qr_service, dispute_service, inquiry_service, create_chat_id, db_manager, request_manager, chat_manager, function_descriptions_multiple, history
 from config import users, secret_key, my_api_key, model_name
 
 import traceback
@@ -42,8 +42,12 @@ def login():
 def index():
     if 'username' not in session:
         return redirect('/login')
+    
+    func_options = []
+    for i in function_descriptions_multiple:
+        func_options.append(i['name'])
 
-    return render_template('index.html')
+    return render_template('index.html', fucn_options = func_options)
 
 @app.route('/get_response', methods = ['POST'])
 def get_response():
@@ -68,7 +72,6 @@ def get_response():
             last_name = request.form['last_name']
             new_dt = request.form['new_dt']
             req_type = request.form['req_type']
-            print('XXXX ref_num', ref_num, type(ref_num))
             if ref_num == '' or start_dt == '' or book_start_dt == '' or lounge_name == '' or email_addr == '' or first_name == '' or last_name == '':
                 raise ValueError("Empty value in input")
 
@@ -157,8 +160,6 @@ def get_response():
                             'request_type':first_response.additional_kwargs["function_call"]["name"]})
         # It's not about a request
         except Exception as e:
-            print('im in exc of app.py')
-            print(e)
             
             history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_, 
             'customer_service_bot': first_response.content, 'datetime':datetime.now()})
