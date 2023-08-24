@@ -21,7 +21,7 @@ class ChatDatabase:
         ''')
     def commit_table(self, chat_id, user_message, bot_response, datetime, category, sentiment_fl, sentiment_str):
         self.cursor.execute('INSERT INTO chat_history (chat_id, user_message, bot_response, datetime, category, sentiment_fl, sentiment_str) VALUES (?,?, ?,?, ?,?, ?)', 
-        ( chat_id, user_message, bot_response, datetime, category, sentiment_fl, sentiment_str))
+        (chat_id, user_message, bot_response, datetime, category, sentiment_fl, sentiment_str))
         
         self.conn.commit()
 
@@ -30,11 +30,11 @@ class ChatDatabase:
         self.cursor.execute(query)
         history = self.cursor.fetchall()
 
-        for row in history:
-            print(row)
+        # for row in history:
+        #     print(row)
         # Close the database connection
         self.conn.close()
-
+        return history
 
 
 class RequestDatabase():
@@ -65,7 +65,8 @@ class RequestDatabase():
         ''')
     def commit_table(self, chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type):
         self.cursor.execute('INSERT INTO requests (chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type) VALUES (?,?,?, ?,?, ?,?, ?,?,?, ?,?, ?)', 
-        (chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type))
+        (chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type)
+        )
         
         self.conn.commit()
 
