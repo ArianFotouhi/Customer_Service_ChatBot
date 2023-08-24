@@ -14,48 +14,49 @@ from NotifPy import EmailNotif
 
 llm = ChatOpenAI(model=model_name, temperature = 0, openai_api_key = my_api_key)
 
-def cancel_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+def cancel_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt,additional_note):
 
         print('cancelation inputs:')
-        print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
-#           sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
-#           sender.EmailSender(subject = "Request Submission: Cancelation ", body = body)
+        print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
 
+#        sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
+#        sender.EmailSender(subject = "Request Submission: Cancelation ", body = body)
+#email to user as well
         return 'Your cancelation request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
 
-def refund_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+def refund_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
-    print('refund inputs:')
-    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    print(' refund inputs:')
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     
     return 'Your refund request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def amend_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+def amend_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
     print('amend inputs:')
-    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     
     return 'Your amending request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def qr_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+def qr_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
     print('QR sending inputs:')
-    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     
     return 'Your QR sending request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def dispute_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+def dispute_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
     print('disputing sending inputs:')
-    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     
     return 'Your dispute request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def inquiry_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt):
+def inquiry_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
     print('inquiry sending inputs:')
-    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt)
+    print(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     
     return 'Your inquiry request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
@@ -80,7 +81,6 @@ function_descriptions_multiple = [
             "required": [],
         },
     },
-
     {
         "name": "amend_service",
         "description": "To change the date of reservation of service",
@@ -158,7 +158,6 @@ def chat_manager(chat_history):
                 AIMessage(content = 'Return one word (complaint, complement, other) as discussion subject based on the input text'),
                 
             ],)
-
         
         # create list of dictionaries
     
@@ -169,30 +168,31 @@ def chat_manager(chat_history):
         #put it into the db_manager
         db_manager(record_type = 'chat', **chat_history[0])
 
-def request_manager(chat_history, request_type):
+def request_manager(chat_history, ref_num, start_dt, book_start_dt,
+                     life_mile_cert,lounge_name,email_addr,first_name,
+                     last_name,new_dt, additional_note, req_type):
+        
         if len(chat_history) == 0:
             chat_id = create_chat_id()
         else:
             chat_id = history[0]['chat_id']
 
-        username = session['username']
-        first_name = users[username]['first_name']
-        last_name = users[username]['last_name']
-        email = users[username]['email']
-        curr_datetime = datetime.now()
-        
         record = {
             'chat_id': chat_id,
-            'username': username,
+            'ref_num': ref_num,
+            'start_dt': start_dt,
+            'book_start_dt': book_start_dt,
+            'life_mile_cert': life_mile_cert,
+            'lounge_name': lounge_name,
+            'new_dt': new_dt,
+            'additional_note': additional_note,
             'first_name': first_name,
             'last_name': last_name,
-            'email': email,
-            'datetime': curr_datetime,
-            'request_type': request_type
+            'email_addr': email_addr,
+            'req_sub_datetime': datetime.now(),
+            'request_type': req_type
         }
 
-        
-    
         #put it into the db_manager
         db_manager(record_type = 'request', **record)
 
