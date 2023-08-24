@@ -47,7 +47,7 @@ def index():
     for i in function_descriptions_multiple:
         func_options.append(i['name'])
 
-    return render_template('index.html', fucn_options = func_options)
+    return render_template('index.html', func_options = func_options)
 
 @app.route('/get_response', methods = ['POST'])
 def get_response():
@@ -71,20 +71,23 @@ def get_response():
             first_name = request.form['first_name']
             last_name = request.form['last_name']
             new_dt = request.form['new_dt']
+            additional_note = request.form['additional_note']
+            
             req_type = request.form['req_type']
             if ref_num == '' or start_dt == '' or book_start_dt == '' or lounge_name == '' or email_addr == '' or first_name == '' or last_name == '':
                 raise ValueError("Empty value in input")
 
             params = {
-                    'ref_num':ref_num,
-                    'start_dt':start_dt,
-                    'book_start_dt':book_start_dt,
-                    'life_mile_cert':life_mile_cert,
+                    'ref_num': ref_num,
+                    'start_dt': start_dt,
+                    'book_start_dt': book_start_dt,
+                    'life_mile_cert': life_mile_cert,
                     'lounge_name': lounge_name,                
                     'email_addr': email_addr,
                     'first_name': first_name,
                     'last_name': last_name,
                     'new_dt': new_dt,
+                    'additional_note': additional_note
                     }
             
             chosen_function = eval(req_type)
@@ -97,18 +100,18 @@ def get_response():
             ],)
 
             
-            history.insert(0, {'chat_id': chat_id, 'human_user': f'a {req_type} request is demanded', 
+            history.insert(0, {'chat_id': chat_id, 'human_user': f'form submitted for {req_type} request', 
             'customer_service_bot': final_reply.content, 'datetime':datetime.now()})
             
             chat_manager(history)
-#            print('I am in Try1')
+            print('I am in Try1')
             return jsonify({'response': final_reply.content,
                             'buttonText': None})
 
         #if form is not submitted and we continue with the conversation
         except Exception as e:
             print('exception', e)
-#            traceback.print_exc()
+            traceback.print_exc()
 
             user_prompt_ = request.form['user_message']
 
@@ -125,7 +128,7 @@ def get_response():
             functions = function_descriptions_multiple,
             )
 
-#            print('I am in Exc1')
+            print('I am in Exc1')
 
         if len(history)>memory_length:
             history = history[:memory_length]
@@ -154,11 +157,11 @@ def get_response():
             'datetime':datetime.now()})
             
             chat_manager(history)
-#            print('I am in Try2')
+            print('I am in Try2')
             return jsonify({'response': second_response.content,                      
                             'buttonText': True, 
                             'request_type':first_response.additional_kwargs["function_call"]["name"]})
-        # It's not about a request
+        # It's not about a request 
         except Exception as e:
             
             history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_, 
