@@ -6,4 +6,4 @@ The standout feature of the app is its ability to call functions, enhancing the 
 
 Moreover, by using Python data structures, a conversational memory has been built for the bot to respond to the current prompt based on past conversations, resulting in an improved chatting experience. The bot's memory size is configurable, making it more convenient for developers and users with varying levels of infrastructure to work with the app.
 
-V3: this version can create form in middle of conversation, to be filled out with user information in case of specific requests that require so.
+V4: this reads and writes chat history using SQL based DB and session. In this way, even by closing and reopening the browser the application can track the chat history (before session expiration)
