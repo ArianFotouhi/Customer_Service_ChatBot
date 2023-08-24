@@ -7,7 +7,7 @@ from datetime import datetime
 from langchain.chat_models import ChatOpenAI
 from langchain.schema import HumanMessage, SystemMessage, AIMessage
 
-from utils import cancel_service, refund_service, amend_service, qr_service, dispute_service, inquiry_service, create_chat_id, db_manager, request_manager, chat_manager, function_descriptions_multiple, history
+from utils import  cancel_service, refund_service, amend_service, qr_service, dispute_service, inquiry_service, create_chat_id, db_manager, request_manager, chat_manager, function_descriptions_multiple, db_chat_history_func
 from config import users, secret_key, my_api_key, model_name
 
 import traceback
@@ -40,22 +40,26 @@ def login():
 def index():
     if 'username' not in session:
         return redirect('/login')
+    
+    if 'chat_id' not in session:
+        session['chat_id'] = create_chat_id()
 
     func_options = []
     for i in function_descriptions_multiple:
         func_options.append(i['name'])
+
+    print('home XXXXXXXXXXX chat_id', session['chat_id'])
 
     return render_template('index.html', func_options=func_options)
 
 
 @app.route('/get_response', methods=['POST'])
 def get_response():
-    global history
-    if len(history) == 0:
-        chat_id = create_chat_id()
-    else:
-        chat_id = history[0]['chat_id']
+    history = db_chat_history_func(session['chat_id'])
+    print('history XXXX', history)
 
+    chat_id = session['chat_id']
+    print('get_rep 1 XXXXXXXXXXX chat_id', session['chat_id'])
     show_button = False
     button_text = None
 
@@ -108,7 +112,6 @@ def get_response():
                            'human_user': f'form submitted for {req_type} request',
                            'customer_service_bot': final_reply,
                            'datetime': datetime.now()})
-
         chat_manager(history)
 
 
@@ -172,6 +175,7 @@ def get_response():
 
         history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_,
                            'customer_service_bot': first_response.content, 'datetime': datetime.now()})
+        print('get_rep 2 XXXXXXXXXXX chat_id', session['chat_id'])
 
         chat_manager(history)
         print('I am in Exc2')
@@ -183,6 +187,7 @@ def get_response():
 @app.route('/logout', methods=['GET'])
 def logout():
     session.pop('username', None)
+    session.pop('chat_id', None)
     return redirect('/login')
 
 
