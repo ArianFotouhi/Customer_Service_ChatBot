@@ -43,6 +43,7 @@
             class="form-control"
             placeholder="Reference Number"
             required 
+            pattern=".*\S+.*"  
           />
         </div>
         <div class="form-group col-md-3">
@@ -134,12 +135,11 @@
           </select>
         </div>
         <div>
-          <button id="submit-btn" type="button" class="btn btn-primary">Submit</button>
+          <button id="submit-btn" type="submit" class="btn btn-primary">Submit</button>
         </div>
       </form>
     </div>
     
-
     <!-- Your HTML code here -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -191,6 +191,7 @@
               first_name: $("#first_name").val(),
               last_name: $("#last_name").val(),
               new_dt: $("#new_dt").val(),
+              additional_note: $("#additional_note").val(),
               req_type: $("#req_type").val(),
             },
             success: function (response) {
