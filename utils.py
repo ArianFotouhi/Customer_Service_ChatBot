@@ -123,8 +123,23 @@ function_descriptions_multiple = [
     },
 
     ]
+def db_chat_history_func(chat_id, max_retrieve=20):
+    db = ChatDatabase()
+    db.create_table()
 
-history = []
+    output = db.fetch_table(query=f'''SELECT user_message, bot_response, datetime
+    FROM chat_history
+    WHERE chat_id = '{chat_id}'
+    ORDER BY datetime DESC
+    LIMIT {max_retrieve};
+    ''')
+                    
+    history = []
+    for i in output:
+        history.append({'human_user': i[0], 'customer_service_bot': i[1], 'datetime': i[2]})
+
+    return history
+# history = []
 
 
 def db_manager(record_type,**record):
@@ -172,10 +187,8 @@ def request_manager(chat_history, ref_num, start_dt, book_start_dt,
                      life_mile_cert,lounge_name,email_addr,first_name,
                      last_name,new_dt, additional_note, req_type):
         
-        if len(chat_history) == 0:
-            chat_id = create_chat_id()
-        else:
-            chat_id = history[0]['chat_id']
+
+        chat_id = session['chat_id']
 
         record = {
             'chat_id': chat_id,
