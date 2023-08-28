@@ -55,7 +55,6 @@ def index():
 @app.route('/get_response', methods=['POST'])
 def get_response():
     history = db_chat_history_func(session['chat_id'])
-    print('history XXXX', history)
 
     chat_id = session['chat_id']
     show_button = False
@@ -64,8 +63,8 @@ def get_response():
     # if the form is submitted and we proceed with request submission
     try:
         ref_num = request.form['ref_num']
-        start_dt = request.form['start_dt']
-        book_start_dt = request.form['book_start_dt']
+        booking_dt = request.form['booking_dt']
+        reservation_dt = request.form['reservation_dt']
         life_mile_cert = request.form['life_mile_cert']
         lounge_name = request.form['lounge_name']
         email_addr = request.form['email_addr']
@@ -75,12 +74,12 @@ def get_response():
         additional_note = request.form['additional_note']
 
         req_type = request.form['req_type']
-        if ref_num == '' or start_dt == '' or book_start_dt == '' or lounge_name == '' or email_addr == '' or first_name == '' or last_name == '':
+        if ref_num == '' or booking_dt == '' or reservation_dt == '' or lounge_name == '' or email_addr == '' or first_name == '' or last_name == '':
             raise ValueError("Empty value in input")
         params = {
             'ref_num': ref_num,
-            'start_dt': start_dt,
-            'book_start_dt': book_start_dt,
+            'booking_dt': booking_dt,
+            'reservation_dt': reservation_dt,
             'life_mile_cert': life_mile_cert,
             'lounge_name': lounge_name,
             'email_addr': email_addr,
@@ -96,7 +95,7 @@ def get_response():
         final_reply = func_output
         
         request_manager(
-                    history, ref_num, start_dt, book_start_dt,
+                    history, ref_num, booking_dt, reservation_dt,
                     life_mile_cert, lounge_name,email_addr, first_name,
                     last_name, new_dt, additional_note, req_type)
         
@@ -113,15 +112,15 @@ def get_response():
         chat_manager(history)
 
 
-        print('I am in Try1')
+        print('I am in Try1 ' + 40*'-')
         return jsonify({'response': final_reply,
                         'buttonText': None})
 
     # if form is not submitted and we continue with the conversation
     except Exception as e:
-        print('exception', e)
+        print('exception in exc1 '+ 40*'-', e)
         traceback.print_exc()
-
+        
         user_prompt_ = request.form['user_message']
 
         system_message = f"""You are a Customer Service Bot. Please ONLY reply questions regarding greeting, service cancelation, extension, refund and aviation industry. Please provide short and easy answers to user prompts. Consider your own conversation history in chat:
@@ -137,7 +136,7 @@ def get_response():
             functions=function_descriptions_multiple,
         )
 
-        print('I am in Exc1')
+        print('I am in Exc1 '+ 40*'-')
 
     if len(history) > memory_length:
         history = history[:memory_length]
@@ -145,11 +144,12 @@ def get_response():
     # A request is about to be submitted (will send the form)
     try:
 
-        chosen_function = eval(
-            first_response.additional_kwargs["function_call"]["name"])
+#        chosen_function = eval(
+#            first_response.additional_kwargs["function_call"]["name"])
 
         func_output = 'Working on your request...'
-        print('func output: ', func_output)
+
+        """
         second_response = llm.predict_messages(
             [
                 HumanMessage(content=user_prompt_),
@@ -157,25 +157,25 @@ def get_response():
                     content=f'the result is: {func_output}, rephrase it and tell it to the customer as their action result.'),
             ],
         )
-
-        print('second reponse: ', second_response)
+        """
         history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_,
-                           'customer_service_bot': second_response.content,
+                           'customer_service_bot': func_output,
                            'datetime': datetime.now()})
 
         chat_manager(history)
-        print('I am in Try2')
-        return jsonify({'response': second_response.content,
+        print('I am in Try2' + 40*'-')
+        return jsonify({'response': func_output,
                         'buttonText': True,
                         'request_type': first_response.additional_kwargs["function_call"]["name"]})
     # It's not about a request
     except Exception as e:
-
+        print('exception in exc2 '+ 40*'-', e)
+        traceback.print_exc()
         history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_,
                            'customer_service_bot': first_response.content, 'datetime': datetime.now()})
 
         chat_manager(history)
-        print('I am in Exc2')
+        print('I am in Exc2'+ 40*'-')
         return jsonify({'response': first_response.content,
                         'buttonText': None,
                         'request_type': None})
