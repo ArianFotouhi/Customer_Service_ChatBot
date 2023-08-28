@@ -48,7 +48,6 @@ def index():
     for i in function_descriptions_multiple:
         func_options.append(i['name'])
 
-    print('home XXXXXXXXXXX chat_id', session['chat_id'])
 
     return render_template('index.html', func_options=func_options)
 
@@ -59,7 +58,6 @@ def get_response():
     print('history XXXX', history)
 
     chat_id = session['chat_id']
-    print('get_rep 1 XXXXXXXXXXX chat_id', session['chat_id'])
     show_button = False
     button_text = None
 
@@ -97,10 +95,10 @@ def get_response():
         func_output = chosen_function(**params)
         final_reply = func_output
         
-        request_manager(history,
-                    ref_num, start_dt, book_start_dt,
-                    life_mile_cert,lounge_name,email_addr,first_name,
-                    last_name,new_dt, additional_note, req_type)
+        request_manager(
+                    history, ref_num, start_dt, book_start_dt,
+                    life_mile_cert, lounge_name,email_addr, first_name,
+                    last_name, new_dt, additional_note, req_type)
         
         # final_reply = llm.predict_messages(
         #     [
@@ -175,7 +173,6 @@ def get_response():
 
         history.insert(0, {'chat_id': chat_id, 'human_user': user_prompt_,
                            'customer_service_bot': first_response.content, 'datetime': datetime.now()})
-        print('get_rep 2 XXXXXXXXXXX chat_id', session['chat_id'])
 
         chat_manager(history)
         print('I am in Exc2')
