@@ -99,3 +99,18 @@ body {
     align-items: center;
     color: white;
 }
+
+.request_button{
+    flex-basis: 50%;
+    height: 100%;
+    background-color: rgb(30, 135, 255);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+    color: white;
+}
+
+.request_button:hover {
+    background-color:rgb(40, 97, 255); /* Change the background color to grey on hover */
+    box-shadow: 5px 5px 5px 5px rgba(0, 0, 0, 0.4);
+  }

@@ -21,4 +21,3 @@ def analyzer(texts):
     sentiment = "positive" if sent_avg > 0 else "negative" if sent_avg < 0 else "neutral"
 
     return sentiment, sent_avg
-

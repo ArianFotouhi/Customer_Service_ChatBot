@@ -52,7 +52,7 @@
             id="booking_dt"
             type="text"
             class="form-control"
-            placeholder="Service Start Date"
+            placeholder="Booking Date"
           />
         </div>
         <div class="form-group col-md-3">
@@ -61,7 +61,7 @@
             id="reservation_dt"
             type="text"
             class="form-control"
-            placeholder="Service Booking Date"
+            placeholder="Reservation Date"
           />
         </div>
         <div class="form-group col-md-3">
@@ -70,7 +70,7 @@
             id="life_mile_cert"
             type="text"
             class="form-control"
-            placeholder="Life Mile Certificate"
+            placeholder="Life Miles Certificate"
           />
         </div>
         <div class="form-group col-md-3">
@@ -139,7 +139,24 @@
         </div>
       </form>
     </div>
-    
+    <p style="color: white; text-align: center;">You can create a request by chat or just simply click on the request of your choice</p>
+    <div style="justify-content: center;display: flex;align-items: center;">
+      
+      
+      <button id="cancel-btn" type="submit" class="request_button">Cancelation Request</button>
+
+      <button id="refund-btn" type="submit" class="request_button">Refund Request</button>
+  
+      <button id="amend-btn" type="submit" class="request_button">Amendment Request</button>
+  
+      <button id="qr-btn" type="submit" class="request_button">QR Code Request</button>
+  
+      <button id="dispute-btn" type="submit" class="request_button">Dispute Request</button>
+  
+      <button id="inquiry-btn" type="submit" class="request_button">Inquiry Request</button>
+  
+    </div>
+ 
     <!-- Your HTML code here -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -176,7 +193,6 @@
             ref_val = "";
           }
 
-          console.log("before, ajax");
           $.ajax({
             url: "/get_response",
             type: "POST",
@@ -196,7 +212,6 @@
             },
             success: function (response) {
               $(".typing").remove();
-              console.log("sent in ajax");
               $("#typing-animation").text(response.response);
 
               $(".typing").removeClass("typing").addClass("old_typing");
@@ -218,11 +233,77 @@
 
         $("#submit-btn").on("click", function () {
           ref_num_rate = true;
-          // console.log('i am in update button');
           sendMessage(ref_num_rate);
           const form = $("#info_form");
           form.css("display", "none");
         });
+
+        $("#cancel-btn").on("click", function () {          
+          
+          $("#req_type").val('cancel_service') 
+          const form = $("#info_form");
+          if(form.css("display")==="block"){
+            form.css("display", "none");
+          }else{
+            form.css("display", "block");
+          }
+
+        });
+
+        $("#refund-btn").on("click", function () {          
+          
+          $("#req_type").val('refund_service') 
+          const form = $("#info_form");
+          if(form.css("display")==="block"){
+            form.css("display", "none");
+          }else{
+            form.css("display", "block");
+          }
+
+        });
+
+        $("#amend-btn").on("click", function () {          
+          
+          $("#req_type").val('amend_service') 
+          const form = $("#info_form");
+          if(form.css("display")==="block"){
+            form.css("display", "none");
+          }else{
+            form.css("display", "block");
+          }
+        });
+
+        $("#qr-btn").on("click", function () {          
+          $("#req_type").val('qr_service') 
+          const form = $("#info_form");
+          if(form.css("display")==="block"){
+            form.css("display", "none");
+          }else{
+            form.css("display", "block");
+          }
+        });
+
+        $("#dispute-btn").on("click", function () {          
+          $("#req_type").val('dispute_service') 
+          const form = $("#info_form");
+          if(form.css("display")==="block"){
+            form.css("display", "none");
+          }else{
+            form.css("display", "block");
+          }
+        });
+
+        $("#inquiry-btn").on("click", function () {          
+          $("#req_type").val('inquiry_service') 
+          const form = $("#info_form");
+          if(form.css("display")==="block"){
+            form.css("display", "none");
+          }else{
+            form.css("display", "block");
+          }
+        });
+
+
       });
     </script>
   </body>
