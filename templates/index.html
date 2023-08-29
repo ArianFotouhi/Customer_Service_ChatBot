@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+  
+<head>
+    <title>Customer Service ChatBot</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/styles.css') }}"
+    />
+    
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  </head>
+
+  <body style="background-color: rgb(4, 45, 102);">
+    <div id="header">
+      <h1>Customer Service ChatBot</h1>
+    </div>
+
+    <div id="chat-container">
+      <div id="chat-box"></div>
+      <div style="display: flex; align-items: center">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Hello! type me here..."
+        />
+        <button style="margin: 2%" id="send-button">Send</button>
+      </div>
+    </div>
+    <div id="recommended_questions">
+    </div>
+
+    <div id="info_form" style="display: none">
+      <form id="client-form" action="/" method="get" class="sm-dark">
+        <div class="form-group col-md-3">
+          <input
+            name="ref_num"
+            id="ref_num"
+            type="text"
+            class="form-control"
+            placeholder="Reference Number"
+            required 
+            pattern=".*\S+.*"  
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="booking_dt"
+            id="booking_dt"
+            type="text"
+            class="form-control"
+            placeholder="Service Start Date"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="reservation_dt"
+            id="reservation_dt"
+            type="text"
+            class="form-control"
+            placeholder="Service Booking Date"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="life_mile_cert"
+            id="life_mile_cert"
+            type="text"
+            class="form-control"
+            placeholder="Life Mile Certificate"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="lounge_name"
+            id="lounge_name"
+            type="text"
+            class="form-control"
+            placeholder="Lounge Name"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="email_addr"
+            id="email_addr"
+            type="email"
+            class="form-control"
+            placeholder="Email Address"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="first_name"
+            id="first_name"
+            type="text"
+            class="form-control"
+            placeholder="First Name"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="last_name"
+            id="last_name"
+            type="text"
+            class="form-control"
+            placeholder="Last Name"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <input
+            name="new_dt"
+            id="new_dt"
+            type="text"
+            class="form-control"
+            placeholder="New Selected Date (optional)"
+          />
+        </div>
+        <div class="form-group col-md-6">
+          <input
+            name="additional_note"
+            id="additional_note"
+            type="email"
+            class="form-control"
+            placeholder="Additional Note (optional)"
+          />
+        </div>
+        <div class="form-group col-md-3">
+          <select name="req_type" id="req_type" class="form-select">
+            {% for option in func_options %}
+            <option value="{{ option }}">{{ option }}</option>
+            {% endfor %}
+          </select>
+        </div>
+        <div>
+          <button id="submit-btn" type="submit" class="btn btn-primary">Submit</button>
+        </div>
+      </form>
+    </div>
+    
+    <!-- Your HTML code here -->
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+      $(document).ready(function () {
+        $("#send-button").click(function () {
+          ref_num_rate = false;
+          sendMessage(ref_num_rate);
+        });
+
+        $("#user-input").keydown(function (event) {
+          if (event.keyCode === 13) {
+            ref_num_rate = false;
+            sendMessage(ref_num_rate);
+          }
+        });
+
+        function sendMessage(ref_num_rate) {
+          var userMessage = $("#user-input").val();
+
+          // if (userMessage.trim() !== "") {
+          $("#user-input").val("");
+          $("#chat-box").append(
+            '<p class="user-message">User: ' + userMessage + "</p>"
+          );
+
+          $("#chat-box").append(
+            '<p class="bot-message">Bot: <span id="typing-animation"> <div class="typing" style="margin-top: 10px; margin-bottom: 20px;">   <span></span>   <span></span>   <span></span> </div></span> </p>'
+          );
+
+          if (ref_num_rate == true) {
+            ref_val = $("#ref_num").val();
+          } else {
+            ref_val = "";
+          }
+
+          console.log("before, ajax");
+          $.ajax({
+            url: "/get_response",
+            type: "POST",
+            data: {
+              user_message: userMessage,
+              ref_num: ref_val,
+              booking_dt: $("#booking_dt").val(),
+              reservation_dt: $("#reservation_dt").val(),
+              life_mile_cert: $("#life_mile_cert").val(),
+              lounge_name: $("#lounge_name").val(),
+              email_addr: $("#email_addr").val(),
+              first_name: $("#first_name").val(),
+              last_name: $("#last_name").val(),
+              new_dt: $("#new_dt").val(),
+              additional_note: $("#additional_note").val(),
+              req_type: $("#req_type").val(),
+            },
+            success: function (response) {
+              $(".typing").remove();
+              console.log("sent in ajax");
+              $("#typing-animation").text(response.response);
+
+              $(".typing").removeClass("typing").addClass("old_typing");
+              var $element = $("#typing-animation");
+              $element.attr("id", "old_typing-animation");
+
+              if (response.buttonText) {
+                const form = $("#info_form");
+                form.css("display", "block");
+                if (response.request_type) {
+                  $("#req_type").val(response.request_type);
+                }
+              }
+            },
+          });
+
+          // }
+        }
+
+        $("#submit-btn").on("click", function () {
+          ref_num_rate = true;
+          // console.log('i am in update button');
+          sendMessage(ref_num_rate);
+          const form = $("#info_form");
+          form.css("display", "none");
+        });
+      });
+    </script>
+  </body>
+</html>
