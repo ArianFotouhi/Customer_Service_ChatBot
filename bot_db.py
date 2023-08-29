@@ -49,8 +49,8 @@ class RequestDatabase():
                 id INTEGER PRIMARY KEY,
                 chat_id TEXT NOT NULL,
                 ref_num TEXT NOT NULL,
-                start_dt TEXT,
-                book_start_dt TEXT,
+                booking_dt TEXT,
+                reservation_dt TEXT,
                 life_mile_cert TEXT,
                 lounge_name TEXT,        
                 new_dt DATETIME,
@@ -58,14 +58,13 @@ class RequestDatabase():
                 first_name TEXT,
                 last_name TEXT,
                 email_addr TEXT,        
-                datetime DATETIME,
                 req_sub_datetime TEXT,
                 request_type TEXT
             )
         ''')
-    def commit_table(self, chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type):
-        self.cursor.execute('INSERT INTO requests (chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type) VALUES (?,?,?, ?,?, ?,?, ?,?,?, ?,?, ?)', 
-        (chat_id, ref_num, start_dt, book_start_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type)
+    def commit_table(self, chat_id, ref_num, booking_dt, reservation_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type):
+        self.cursor.execute('INSERT INTO requests (chat_id, ref_num, booking_dt, reservation_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type) VALUES (?,?,?, ?,?, ?,?, ?,?,?, ?,?, ?)', 
+        (chat_id, ref_num, booking_dt, reservation_dt, life_mile_cert, lounge_name, new_dt, additional_note, first_name, last_name, email_addr, req_sub_datetime, request_type)
         )
         
         self.conn.commit()
