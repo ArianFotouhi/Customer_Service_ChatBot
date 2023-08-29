@@ -14,50 +14,50 @@ from NotifPy import EmailNotif
 
 llm = ChatOpenAI(model=model_name, temperature = 0, openai_api_key = my_api_key)
 
-def cancel_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt,additional_note):
+def cancel_service(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt,additional_note):
 
-        body = email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
+        body = email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
         sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
         sender.EmailSender(subject = "Request Submission: Cancelation ", body = body)
 #email to user as well
         return 'Your cancelation request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
 
-def refund_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
+def refund_service(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
-    body = email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
+    body = email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
     sender.EmailSender(subject = "Request Submission: Refund", body = body)
     
     return 'Your refund request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def amend_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
+def amend_service(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
-    body = email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
+    body = email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
     sender.EmailSender(subject = "Request Submission: Amendment ", body = body)
     
     return 'Your amending request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def qr_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
+def qr_service(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
-    body = email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
+    body = email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
     sender.EmailSender(subject = "Request Submission: Not received QR code ", body = body)
 
     return 'Your QR sending request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def dispute_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
+def dispute_service(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
-    body = email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
+    body = email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
     sender.EmailSender(subject = "Request Submission: Dispute ", body = body)
     
     return 'Your dispute request has been received. We will contact you accordingly and in case of further inquries please email info@company.com'
 
-def inquiry_service(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
+def inquiry_service(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     
-    body = email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
+    body = email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note)
     sender = EmailNotif.email_notif(sender_address= sender_email_address, sender_password= sender_email_password, recipient_email=recpeint_email_address)
     sender.EmailSender(subject = "Request Submission: Inquiry ", body = body)
     
@@ -185,7 +185,7 @@ def chat_manager(chat_history):
         #put it into the db_manager
         db_manager(record_type = 'chat', **chat_history[0])
 
-def request_manager(chat_history, ref_num, start_dt, book_start_dt,
+def request_manager(chat_history, ref_num, booking_dt, reservation_dt,
                      life_mile_cert,lounge_name,email_addr,first_name,
                      last_name,new_dt, additional_note, req_type):
 
@@ -194,8 +194,8 @@ def request_manager(chat_history, ref_num, start_dt, book_start_dt,
         record = {
             'chat_id': chat_id,
             'ref_num': ref_num,
-            'start_dt': start_dt,
-            'book_start_dt': book_start_dt,
+            'booking_dt': booking_dt,
+            'reservation_dt': reservation_dt,
             'life_mile_cert': life_mile_cert,
             'lounge_name': lounge_name,
             'new_dt': new_dt,
@@ -210,15 +210,15 @@ def request_manager(chat_history, ref_num, start_dt, book_start_dt,
         #put it into the db_manager
         db_manager(record_type = 'request', **record)
 
-def email_content(ref_num, start_dt, book_start_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
+def email_content(ref_num, booking_dt, reservation_dt, life_mile_cert,lounge_name,email_addr,first_name,last_name,new_dt, additional_note):
     body = 'A request has been submitted.'
     
     if ref_num:
         body += '\n Reference Number: '+str(ref_num)
-    if start_dt:
-        body += '\n Service Start Date: '+str(start_dt)
-    if book_start_dt:
-        body += '\n Service Booking Date: '+str(book_start_dt)
+    if booking_dt:
+        body += '\n Service Start Date: '+str(booking_dt)
+    if reservation_dt:
+        body += '\n Service Booking Date: '+str(reservation_dt)
     if life_mile_cert:
         body += '\n Life Mile Certificate: '+str(life_mile_cert)
     if life_mile_cert:
